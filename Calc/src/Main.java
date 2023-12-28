@@ -5,7 +5,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Введите выражение: ");
         String input = scanner.nextLine().replaceAll("\\s", ""); // удалил введённые пробелы
-//Создал блок исключения для вывода неправильного результата или ошибки
+//Создал блок исключения для вывода результата или ошибки
         try {
             String result = calc(input);
             System.out.println("Результат: " + result);
@@ -20,7 +20,13 @@ public class Main {
         if (operatorIndex == -1) {
             throw new IllegalArgumentException("Некорректное выражение");
         }
-            //извлёк подстроки (символ) содержимого input на первую цифру, арифметический знак, вторая цифра
+         int operatorCount = countOperators(input);
+
+         if (operatorCount != 1) {
+             throw new IllegalArgumentException("Выражение должно содержать только один арифметический оператор");
+         }
+
+         //извлёк подстроки (символ) содержимого input на первую цифру, арифметический знак, вторая цифра
         String value1 = input.substring(0, operatorIndex);
         String operator = input.substring(operatorIndex, operatorIndex + 1);
         String value2 = input.substring(operatorIndex + 1);
@@ -58,12 +64,32 @@ public class Main {
             return String.valueOf(result);
         }
     }
-//метод для нахождения арифметического знака
+//метод для нахождения количества знаков оператора
+    static int countOperators(String input) {
+        int count = 0;
+        boolean isOperator = false;
+
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (c == '+' || c == '-' || c == '*' || c == '/') {
+                if (!isOperator) {
+                    count++;
+                    isOperator = true;
+                }
+            } else {
+                isOperator = false;
+            }
+        }
+
+        return count;
+    }
+    //метод для нахождения арифметического знака
      static int findOperatorIndex(String input) {
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             if (c == '+' || c == '-' || c == '*' || c == '/') {
                 return i;
+
             }
         }
         return -1;
